@@ -1,0 +1,4 @@
+reasoning-gym
+# Add other potential dependencies as needed
+numpy
+pandas 
