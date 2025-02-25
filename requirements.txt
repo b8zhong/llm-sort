@@ -1,13 +1,9 @@
 reasoning-gym
-# Add other potential dependencies as needed
 numpy
-<<<<<<< HEAD
 pandas
+openai
+dotenv
 scipy
 python-dotenv
 openai>=1.0.0
-=======
-pandas 
-openai
-dotenv
->>>>>>> origin/main
+
