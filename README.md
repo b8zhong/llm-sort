@@ -22,6 +22,13 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
+3. Use OpenAI or OpenRouter by setting the environment variables:
+```bash
+touch .env
+echo OPENAI_API_KEY=your_api_key >> .env
+echo OPENROUTER_API_KEY=your_api_key >> .env
+```
+
 ## Usage
 
 Here's an example of how to use the evaluator with your LLM:
@@ -73,4 +80,4 @@ Sort these numbers in ascending order: 48, -51, -72, -80
 Your LLM should return answers in the format:
 ```python
 ['-80', '-72', '-51', '48']  # Numbers as strings in a list
-``` 
+```
