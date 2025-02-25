@@ -112,5 +112,7 @@ class LLMClient:
         )
 
         # Return the raw string response after cleaning
+        if response.choices[0].message.content is None:
+            raise ValueError("No response from LLM")
         answer = response.choices[0].message.content.strip()
         return answer.replace("```python", "").replace("```", "").strip()
