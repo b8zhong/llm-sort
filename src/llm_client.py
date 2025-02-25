@@ -37,7 +37,20 @@ def create_sort_prompt(question: str) -> list[dict]:
     """
     Create a prompt for the sorting task.
     """
-    system_prompt = """You are a helpful assistant that sorts numbers.
+    is_attribute_sorting = any(phrase in question for phrase in [
+        "Sort these products", "Sort these students", 
+        "Sort these restaurants", "Sort these cities"
+    ])
+    
+    if is_attribute_sorting:
+        system_prompt = """You are a helpful assistant that sorts items by their attributes.
+Please follow these instructions carefully:
+1. Return ONLY a list of item names in the correct order
+2. Format your answer like this example: ['Student C', 'Student A', 'Student B']
+3. Do not include any explanations or additional text
+4. Make sure to include all items from the question"""
+    else:
+        system_prompt = """You are a helpful assistant that sorts numbers.
 Please follow these instructions carefully:
 1. Return ONLY a list of strings representing the sorted numbers
 2. Format your answer exactly like this example: ['-80', '-72', '-51', '48']
@@ -80,7 +93,7 @@ class LLMClient:
         Process a sorting question and return the sorted list as a string.
         
         Args:
-            question: The sorting question from reasoning-gym
+            question: The sorting question from reasoning-gym or attribute sorting
             
         Returns:
             str: String representation of the sorted list
