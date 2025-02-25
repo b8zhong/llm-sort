@@ -1,49 +1,53 @@
 """
-Benchmark module for sorting evaluation.
+Benchmark module for sorting evaluation using reasoning-gym.
 """
 
-from typing import List
-import random
+from typing import Dict, Any, Callable
+from src.sort_evaluator import SortEvaluator
 
-def generate_test_cases() -> List[List]:
+def run_benchmark(
+    llm_sort_fn: Callable[[str], list],
+    config: Dict[str, Any] = None,
+    size: int = 100,
+    seed: int = 42
+) -> dict:
     """
-    Generate test cases for sorting evaluation.
-    
-    Returns:
-        List of test cases with varying complexity
-    """
-    test_cases = [
-        # Simple numeric lists
-        [4, 2, 1, 3],
-        [10, -5, 0, 15, 8],
-        
-        # Lists with duplicates
-        [3, 1, 3, 2, 1],
-        
-        # Edge cases
-        [],  # Empty list
-        [1],  # Single element
-        [1, 1, 1],  # All same elements
-        
-        # TODO: Add more complex test cases
-    ]
-    return test_cases
-
-def run_benchmark(evaluator) -> dict:
-    """
-    Run sorting benchmark using the provided evaluator.
+    Run sorting benchmark using reasoning-gym's number_sorting task.
     
     Args:
-        evaluator: Instance of SortEvaluator
+        llm_sort_fn: Function that takes a question string and returns a sorted list of strings
+        config: Optional configuration for number_sorting task
+        size: Number of test cases to generate
+        seed: Random seed for reproducibility
         
     Returns:
-        dict: Benchmark results and metrics
+        dict: Benchmark results including:
+            - overall_score: Average score across all test cases
+            - test_cases: List of individual test case results
     """
-    test_cases = generate_test_cases()
-    results = {}
+    evaluator = SortEvaluator(config)
+    evaluator.initialize_dataset(size=size, seed=seed)
     
-    for i, test_case in enumerate(test_cases):
-        result = evaluator.evaluate_sorting(test_case)
-        results[f"test_case_{i}"] = result
+    results = {
+        "overall_score": 0.0,
+        "test_cases": []
+    }
     
+    total_score = 0.0
+    
+    for i, entry in enumerate(evaluator.dataset):
+        # Get LLM's answer for the question
+        model_answer = llm_sort_fn(entry["question"])
+        
+        # Evaluate the answer
+        result = evaluator.evaluate_sorting(model_answer, entry)
+        results["test_cases"].append({
+            "id": i,
+            "question": entry["question"],
+            **result
+        })
+        
+        total_score += result["score"]
+    
+    results["overall_score"] = total_score / size
     return results 
