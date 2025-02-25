@@ -1,6 +1,7 @@
 reasoning-gym
 # Add other potential dependencies as needed
 numpy
-pandas 
-openai
-dotenv
+pandas
+scipy
+python-dotenv
+openai>=1.0.0
