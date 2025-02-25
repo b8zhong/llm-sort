@@ -7,7 +7,7 @@ from .llm_client import LLMClient
 
 def main():
     # Initialize the LLM client
-    llm = LLMClient(use_openrouter=True)  # Set to False to use OpenAI API
+    llm = LLMClient(use_openrouter=False)  # Set to False to use OpenAI API
     
     # Configuration for the number_sorting task
     config = {
@@ -15,8 +15,8 @@ def main():
         'max_numbers': 10,
         'min_decimals': 0,
         'max_decimals': 100,
-        'min_value': -10000.0,
-        'max_value': 10000.0
+        'min_value': 10000.0,
+        'max_value': 10001.0
     }
     
     # Run the benchmark

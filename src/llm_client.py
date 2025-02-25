@@ -3,7 +3,7 @@ LLM client implementation for number sorting evaluation.
 """
 
 import os
-from typing import Any, Iterable, Optional
+from typing import Any, Iterable
 import time
 from openai import OpenAI
 from openai.types.chat import ChatCompletion, ChatCompletionMessageParam
@@ -64,12 +64,14 @@ class LLMClient:
                 api_key=api_key,
                 timeout=90.0,
             )
+            model = "anthropic/claude-3-sonnet"
         else:
             api_key = os.getenv("OPENAI_API_KEY")
             self.client = OpenAI(api_key=api_key)
+            model = "gpt-4o-mini"
             
         self.sampling_params = {
-            "model": "anthropic/claude-3.5-sonnet",
+            "model": model,
             "max_tokens": 4096,
         }
     
