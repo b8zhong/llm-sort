@@ -39,7 +39,6 @@ def run_benchmark(
     total_kendall_tau = 0.0
 
     for i, entry in enumerate(evaluator.dataset):
-
         model_answer = llm_sort_fn(entry["question"])
 
         result = evaluator.evaluate_sorting(model_answer, entry)

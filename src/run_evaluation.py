@@ -7,7 +7,6 @@ from .llm_client import LLMClient
 import numpy as np
 
 def main():
-
     use_openrouter = False
     llm = LLMClient(use_openrouter=use_openrouter)
 

@@ -78,11 +78,8 @@ class SortEvaluator:
         )
 
         try:
-
             ground_truth_list = self._convert_list_string_to_floats(question_entry["answer"])
-
             model_list = self._convert_list_string_to_floats(model_answer)
-
             tau, p_value = kendalltau(ground_truth_list, model_list)
 
             if np.isnan(tau):
