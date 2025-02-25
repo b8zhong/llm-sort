@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
+
 def llm_generate(
     client: OpenAI,
     messages: Iterable[ChatCompletionMessageParam],
@@ -33,15 +34,21 @@ def llm_generate(
             if trial == max_retry - 1:
                 raise
 
+
 def create_sort_prompt(question: str) -> list[dict]:
     """
     Create a prompt for the sorting task.
     """
-    is_attribute_sorting = any(phrase in question for phrase in [
-        "Sort these products", "Sort these students", 
-        "Sort these restaurants", "Sort these cities"
-    ])
-    
+    is_attribute_sorting = any(
+        phrase in question
+        for phrase in [
+            "Sort these products",
+            "Sort these students",
+            "Sort these restaurants",
+            "Sort these cities",
+        ]
+    )
+
     if is_attribute_sorting:
         system_prompt = """You are a helpful assistant that sorts items by their attributes.
 Please follow these instructions carefully:
@@ -56,17 +63,18 @@ Please follow these instructions carefully:
 2. Format your answer exactly like this example: ['-80', '-72', '-51', '48']
 3. Do not include any explanations or additional text
 4. Make sure all numbers are strings inside the list"""
-    
+
     return [
         {"role": "system", "content": system_prompt},
-        {"role": "user", "content": question}
+        {"role": "user", "content": question},
     ]
+
 
 class LLMClient:
     def __init__(self, use_openrouter: bool = True):
         """
         Initialize LLM client with either OpenRouter or OpenAI.
-        
+
         Args:
             use_openrouter: If True, use OpenRouter API, else use OpenAI API
         """
@@ -82,29 +90,27 @@ class LLMClient:
             api_key = os.getenv("OPENAI_API_KEY")
             self.client = OpenAI(api_key=api_key)
             model = "gpt-4o-mini"
-            
+
         self.sampling_params = {
             "model": model,
             "max_tokens": 4096,
         }
-    
+
     def sort_numbers(self, question: str) -> str:
         """
         Process a sorting question and return the sorted list as a string.
-        
+
         Args:
             question: The sorting question from reasoning-gym or attribute sorting
-            
+
         Returns:
             str: String representation of the sorted list
         """
         messages = create_sort_prompt(question)
         response = llm_generate(
-            client=self.client,
-            messages=messages,
-            sampling_params=self.sampling_params
+            client=self.client, messages=messages, sampling_params=self.sampling_params
         )
-        
+
         # Return the raw string response after cleaning
         answer = response.choices[0].message.content.strip()
-        return answer.replace('```python', '').replace('```', '').strip() 
+        return answer.replace("```python", "").replace("```", "").strip()

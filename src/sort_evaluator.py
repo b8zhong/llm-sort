@@ -8,6 +8,7 @@ import numpy as np
 from scipy.stats import kendalltau
 import re
 
+
 class SortEvaluator:
     def __init__(self, config: Dict[str, Any] = None):
         """
@@ -35,10 +36,7 @@ class SortEvaluator:
             seed: Random seed for reproducibility
         """
         self.dataset = reasoning_gym.create_dataset(
-            'number_sorting',
-            size=size,
-            seed=seed,
-            **self.config
+            "number_sorting", size=size, seed=seed, **self.config
         )
 
     def _convert_list_string_to_floats(self, list_str: str) -> List[float]:
@@ -52,7 +50,7 @@ class SortEvaluator:
             List of float values
         """
 
-        numbers = re.findall(r'-?\d+\.?\d*', list_str)
+        numbers = re.findall(r"-?\d+\.?\d*", list_str)
         return [float(num) for num in numbers]
 
     def evaluate_sorting(self, model_answer: str, question_entry: Dict) -> dict:
@@ -70,15 +68,18 @@ class SortEvaluator:
                 - metadata: Original question metadata
         """
         if self.dataset is None:
-            raise RuntimeError("Dataset not initialized. Call initialize_dataset first.")
+            raise RuntimeError(
+                "Dataset not initialized. Call initialize_dataset first."
+            )
 
         binary_score = self.dataset.score_answer(
-            answer=model_answer,
-            entry=question_entry
+            answer=model_answer, entry=question_entry
         )
 
         try:
-            ground_truth_list = self._convert_list_string_to_floats(question_entry["answer"])
+            ground_truth_list = self._convert_list_string_to_floats(
+                question_entry["answer"]
+            )
             model_list = self._convert_list_string_to_floats(model_answer)
             tau, p_value = kendalltau(ground_truth_list, model_list)
 
@@ -96,5 +97,5 @@ class SortEvaluator:
             "kendall_p_value": p_value,
             "metadata": question_entry["metadata"],
             "correct_answer": question_entry["answer"],
-            "model_answer": model_answer
+            "model_answer": model_answer,
         }

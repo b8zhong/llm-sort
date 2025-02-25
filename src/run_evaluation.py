@@ -6,6 +6,7 @@ from evals.benchmarks.sorting_benchmark import run_benchmark
 from .llm_client import LLMClient
 import numpy as np
 
+
 def main():
     use_openrouter = False
     llm = LLMClient(use_openrouter=use_openrouter)
@@ -16,12 +17,12 @@ def main():
     print("=" * 80)
 
     config = {
-        'min_numbers': 5,
-        'max_numbers': 10,
-        'min_decimals': 10,
-        'max_decimals': 15,
-        'min_value': 10000.0,
-        'max_value': 10001.0
+        "min_numbers": 5,
+        "max_numbers": 10,
+        "min_decimals": 10,
+        "max_decimals": 15,
+        "min_value": 10000.0,
+        "max_value": 10001.0,
     }
 
     print("\n=== Task Configuration ===")
@@ -31,10 +32,7 @@ def main():
 
     print("\nRunning evaluation...")
     results = run_benchmark(
-        llm_sort_fn=llm.sort_numbers,
-        config=config,
-        size=2,  
-        seed=42    
+        llm_sort_fn=llm.sort_numbers, config=config, size=2, seed=42
     )
 
     print(f"\n=== Results ===")
@@ -43,15 +41,17 @@ def main():
     print("\nDetailed Results:")
     print("-" * 80)
 
-    for case in results['test_cases']:
+    for case in results["test_cases"]:
         print(f"Test Case {case['id']}:")
         print(f"Question: {case['question']}")
         print(f"Model Answer: {case['model_answer']}")
         print(f"Correct Answer: {case['correct_answer']}")
         print(f"Binary Score: {case['binary_score']}")
-        print(f"Kendall Tau: {case['kendall_tau']:.4f} (p-value: {case['kendall_p_value']:.4f})")
+        print(
+            f"Kendall Tau: {case['kendall_tau']:.4f} (p-value: {case['kendall_p_value']:.4f})"
+        )
 
-        tau = case['kendall_tau']
+        tau = case["kendall_tau"]
         if tau > 0.9:
             interpretation = "Perfect/Near-perfect sorting"
         elif tau > 0.7:
@@ -73,6 +73,7 @@ def main():
 
         print(f"Interpretation: {interpretation}")
         print("-" * 80)
+
 
 if __name__ == "__main__":
     main()
